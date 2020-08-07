@@ -11,12 +11,18 @@ import {
   Input,
   Form,
   Calendar,
+  DatePicker,
+  TimePicker,
   List,
 } from 'antd'
 
 import {
   EditOutlined,
 } from '@ant-design/icons'
+
+import lodash from 'lodash'
+import moment from 'moment'
+import 'moment/locale/ru'
 
 class Doctors extends React.Component{
   state = {
@@ -25,6 +31,10 @@ class Doctors extends React.Component{
     age: '',
     gender: '',
     phone: '',
+    calendar: [],
+    selectedTimes: [],
+    selectedDate: '',
+    selectedDateValue: '',
   }
 
   componentDidMount(){
@@ -72,24 +82,64 @@ class Doctors extends React.Component{
     }
     return time
   }
+  
+  handleDate = (e) => {
+    this.setState({calendar: e})
+  }
+  
+  handleSelectedDate = (e) => {
+    let timestamp = moment(e).format('X')
+    this.timePickerValue(timestamp)
+    this.setState({selectedDate: timestamp})
+  }
 
+  handleTime = (e) => {
+    const { selectedTimes, selectedDate } = this.state
+    
+    let timestamp_from = moment(e[0]._d).format('X')
+    let timestamp_to = moment(e[1]._d).format('X')
+    let index = lodash.findIndex(selectedTimes, {date: selectedDate})
+    if(index !== -1){
+      selectedTimes.splice(index, 1, {date: selectedDate, time_from: timestamp_from, time_to: timestamp_to})
+    } else {
+      selectedTimes.push({date: selectedDate, time_from: timestamp_from, time_to: timestamp_to})
+    }
+    this.setState({selectedTimes: selectedTimes})
+  }
+  
+  timePickerValue = (date) => {
+    const { selectedTimes } = this.state
+    let selectedTime = selectedTimes.filter(item => item.date === date)
+    if(selectedTime.length > 0){
+      let newArr = []
+      let time_from = moment.unix(selectedTime[0].time_from)
+      let time_to = moment.unix(selectedTime[0].time_to)
+      newArr.push(time_from)
+      newArr.push(time_to)
+      this.setState({selectedDateValue: newArr})
+    }
+    return
+  }
+  
   render(){
     const { doctors } = this.props
-    const { selectedDoctor } = this.state
+    const { selectedDoctor, calendar, selectedTimes, selectedDateValue } = this.state
     const times = this.intervals()
     
+    console.log('selectedTimes', selectedTimes)
     return(
       <Layout>
         <Modal
-          title="Basic Modal"
+          title='Добавить доктора'
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          width={'90%'}
+          width={'fit-content'}
           style={{overflow: 'auto'}}
+          okText={'Сохранить'}
         >
-          <div style={{display: 'flex', flexDirection: 'row', width: '1000px', overflow: 'auto'}}>
-            <Form style={{flex: 1}}>
+          <div style={{display: 'flex', flexDirection: 'row', overflow: 'auto'}}>
+            <Form style={{width: '300px'}}>
               <Form.Item>
                 <label>ФИО</label>
                 <Input 
@@ -115,14 +165,37 @@ class Doctors extends React.Component{
                 />
               </Form.Item>
             </Form>
-            <section style={{flex: 1}}>
-              <Calendar fullscreen={false}/>
+            <section 
+              style={{
+                width: '300px', 
+                display: 'flex', 
+                flexDirection: 'column',
+                margin: '0 10px'
+              }}
+            >
+              <label>Даты</label>
+              <DatePicker.RangePicker onChange={this.handleDate}/>
+              <Calendar 
+                fullscreen={false} 
+                validRange={calendar.length > 0 ? calendar : undefined}
+                onChange={(e) => this.handleSelectedDate(e)}
+                dateCellRender={() => 
+                  <p>123</p>
+                }
+              />
+              <TimePicker.RangePicker 
+                value={selectedDateValue !== '' ? selectedDateValue : undefined}
+                onChange={this.handleTime}
+              />
             </section>
             <section style={{flex: 1}}>
-              <List style={{maxHeight: '300px', overflow: 'auto'}}>
+              <List style={{width: '300px', maxHeight: '300px', overflow: 'auto'}}>
                 {
                   times.map((time, i) => (
-                    <List.Item key={i}>{time}</List.Item>
+                    <List.Item key={i}>
+                      <label>{time}</label>  
+                      <TimePicker.RangePicker />
+                    </List.Item>
                   ))
                 }
               </List>
