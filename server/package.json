@@ -1,0 +1,36 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "justHello",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node index.js"
+  },
+  "type": "module",
+  "author": "Ivan Lozhkin",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.4.0",
+    "fs": "0.0.1-security",
+    "fs-extra": "^8.0.1",
+    "lodash": "^4.17.15",
+    "mime": "^2.4.4",
+    "mysql2": "^2.1.0",
+    "request": "^2.88.0",
+    "sequelize": "^5.21.9",
+    "sharp": "^0.25.1",
+    "validator": "^13.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-export-default-from": "^7.8.3",
+    "@babel/preset-env": "^7.9.6"
+  }
+}
