@@ -11,8 +11,20 @@ class ClientsModel extends Sequelize.Model{
       },
       name: {
         type: DataTypes.STRING(45), 
-        field: 'login',
+        field: 'name',
       },
+      age: {
+        type: DataTypes.STRING(45),
+        field: 'age',
+      },
+      gender: {
+        type: DataTypes.STRING(45),
+        field: 'gender',
+      },
+      phone: {
+        type: DataTypes.STRING(45),
+        field: 'phone',
+      }
     },
     {
       freezeTableName: true,
@@ -32,7 +44,7 @@ class ClientsModel extends Sequelize.Model{
   }
   
   static associate(models) {
-    this.belongsTo(models.Doctors, { foreignKey: 'client_id'})
+    this.hasMany(models.Appointment, { foreignKey: 'clients_id'})
   }
 }
         

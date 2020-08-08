@@ -7,6 +7,7 @@ class UserController{
   constructor(model){    
     this.getAll = this.getAll.bind(this)
     this.getOne = this.getOne.bind(this)
+    this.create = this.create.bind(this)
   }
   
   getOne = async(req, res, next) => {
@@ -29,6 +30,24 @@ class UserController{
       res.status(200).send({data: clients})
     }catch(e){
       console.log('Err', e)
+    }
+  }
+  
+  create = async(req, res, next) => {
+    const client = req.body
+    
+    try{
+      await db.Clients.create({
+        name: client.name,
+        age: client.age,
+        gender: client.gender,
+        phone: client.phone,
+      })
+      
+      res.status(201).send()
+      
+    }catch(e){
+      console.log('ERR', e)
     }
   }
 }

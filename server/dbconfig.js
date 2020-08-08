@@ -3,6 +3,8 @@
 import Sequelize from 'sequelize'
 import ClientsModel from './models/ClientsModel.js'
 import DoctorsModel from './models/DoctorsModel.js'
+import TimeTableModel from './models/TimeTableModel.js'
+import AppointmentModel from './models/AppointmentModel.js'
 
 const connection = new Sequelize(
   process.env.DATABASE_NAME, 
@@ -17,7 +19,9 @@ const connection = new Sequelize(
 
 const models = {
   Clients: ClientsModel.init(connection, Sequelize),
-  Doctors: DoctorsModel.init(connection, Sequelize)
+  Doctors: DoctorsModel.init(connection, Sequelize),
+  TimeTable: TimeTableModel.init(connection, Sequelize),
+  Appointment: AppointmentModel.init(connection, Sequelize),
 }
 
 Object.values(models)

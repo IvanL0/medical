@@ -13,10 +13,18 @@ class UserModel extends Sequelize.Model{
         type: DataTypes.STRING(45), 
         field: 'name',
       },
-      position: {
+      age: {
         type: DataTypes.STRING(45),
-        field: 'position',
+        field: 'age',
       },
+      gender: {
+        type: DataTypes.STRING(45),
+        field: 'gender',
+      },
+      phone: {
+        type: DataTypes.STRING(45),
+        field: 'phone',
+      }
     },
     {
       freezeTableName: true,
@@ -36,7 +44,7 @@ class UserModel extends Sequelize.Model{
   }
   
   static associate(models) {
-    this.hasMany(models.Clients, {foreignKey: 'doctor_id'})
+    this.hasMany(models.TimeTable, {foreignKey: 'doctors_id'})
   }
 }
         

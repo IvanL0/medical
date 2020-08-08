@@ -7,9 +7,11 @@ import {
   RES_ERRORS,
 } from '../constants'
 
+import { url } from '../../config/url'
+
 export const getDoctors = () => async dispatch => {
   try{
-    const response = await axios.get('/doctors', {
+    const response = await axios.get(url + '/doctors', {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -23,27 +25,16 @@ export const getDoctors = () => async dispatch => {
 
 export const getDoctor = (id) => async dispatch => {
   try{
-    const response = await axios.get(`/doctors/${id}`, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    })
+    const response = await axios.get(url + `/doctors/${id}`)
     dispatch({type: GET_DOCTOR, payload: response})
   } catch(e){
     console.log('ERR', e)
   }
 }
 
-export const createDoctor = (data) => async dispatch => {
+export const postDoctor = (data) => async dispatch => {
   try{
-    const response = await axios.post(`/doctors`, {
-      data,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    })
+    const response = await axios.post(url + `/doctors`, data)
     response.status.toString()[0] === '2' ? 
       dispatch({type: RES_DATA}) : 
       dispatch({type: RES_ERRORS, payload: response})
@@ -54,13 +45,7 @@ export const createDoctor = (data) => async dispatch => {
 
 export const updateDoctor = (id, data) => async dispatch => {
   try{
-    const response = await axios.patch(`/doctor/${id}`, {
-      data,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      }
-    })
+    const response = await axios.patch(url + `/doctors/${id}`, data)
     response.status.toString()[0] === '2' ? dispatch({type: RES_DATA}) : dispatch({type: RES_ERRORS, payload: response})
   } catch(e){
     console.log('ERR', e)
