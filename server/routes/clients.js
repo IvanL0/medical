@@ -31,9 +31,15 @@ router.use(function timeLog(req, res, next) {
   next()
 })
 
-router.get('/', (req, res, next) => {
+router.post('/', validate([
+  check('name').not().isEmpty().withMessage('Поле не может быть пустым'),
+  check('age').not().isEmpty().withMessage('Поле не может быть пустым'),
+  check('gender').not().isEmpty().withMessage('Поле не может быть пустым'),
+  check('phone').not().isEmpty().withMessage('Поле не может быть пустым'),
+  check('time').not().isEmpty().withMessage('Поле не может быть пустым'),
+]), (req, res, next) => {
 
-  Client.getAll(req, res, next)
+  Client.create(req, res, next)
 })
 
 

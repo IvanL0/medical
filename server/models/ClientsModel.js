@@ -28,8 +28,8 @@ class ClientsModel extends Sequelize.Model{
     },
     {
       freezeTableName: true,
-      tableName: 'user',
-      modelName: 'user',
+      tableName: 'clients',
+      modelName: 'clients',
       sequelize,
     }
     )

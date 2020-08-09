@@ -16,9 +16,14 @@ class DoctorController{
     try{
       const doctor = await db.Doctors.findOne({
         where: {id: req.params.id},
-        include: [
-          {model: db.TimeTable, required: false,}
-        ]
+        include: [{
+            model: db.TimeTable, 
+            required: false,
+            include: [{
+              model: db.Appointment,
+              required: false
+            }]
+          }]
       })
       res.status(200).send({data: doctor})
     } catch(e){
@@ -61,28 +66,56 @@ class DoctorController{
         where: {id: req.params.id}
       })
       
-      if(data.dates && data.times){
-        let datesArr = [], timesArr = []
-        let startDate = moment(data.dates[0])
-        let endDate = moment(data.dates[1])
-        
-        let startTime = moment(data.times[0])
-        let endTime = moment(data.times[1])
-        
-        for (let dates = moment(startDate); m.isBefore(endDate); m.add(1, 'days')) {
-          datesArr.push(m.format())
-        }
-        
-        for (var times = moment(startTime); m.isBefore(endTime); m.add(1, 'days')) {
-          timesArr.push(m.format())
-        }
-        
-        for(let i = 0; i < datesArr.length; i++){
-          // await db.TimeTable.create({
-          //   year: 
-          // })
-        } 
+      if(data.info){
+        await doctor.update(data.info)
       }
+      
+      if(data.timetable){
+        let years = data.timetable.map(item => moment(item[0]).get('year'))
+        let months = data.timetable.map(item => moment(item[0]).get('month'))
+        let dates = data.timetable.map(item => moment(item[0]).get('date'))
+        
+        const timetable = await db.TimeTable.findAll({
+          where: {
+            [Op.and]: [{year: years, month: months, date: dates}, {doctors_id: doctor.dataValues.id}]
+          }
+        })
+        
+        console.log('TIMETABLE', timetable)
+        
+        if(timetable.length > 0){
+          for(let i = 0; i < data.timetable.length; i++){
+            let year = moment(data.timetable[i][0]).year()
+            console.log('YEAR', year)
+            await db.TimeTable.update({
+              year: moment(data.timetable[i][0]).get('year'),
+              month: moment(data.timetable[i][0]).get('month'),
+              date: moment(data.timetable[i][0]).get('date'),
+              time_from: data.timetable[i][0],
+              time_to: data.timetable[i][1],
+            }, 
+            {
+              where: {
+                [Op.and]: [{year: years, month: months, date: dates}, {doctors_id: doctor.dataValues.id}]
+              }
+            })
+          }
+        } else {
+          for(let i = 0; i < data.timetable.length; i++){
+            let year = moment(data.timetable[i][0]).format('YYYY')
+            console.log('YEAR', year)
+            await db.TimeTable.create({
+              year: moment(data.timetable[i][0]).get('year'),
+              month: moment(data.timetable[i][0]).get('month'),
+              date: moment(data.timetable[i][0]).get('date'),
+              time_from: data.timetable[i][0],
+              time_to: data.timetable[i][1],
+              doctors_id: doctor.dataValues.id,
+            })
+          }
+        }
+      }
+      res.status(201).send()
     } catch(e){
       console.log('ERR', e)
     }

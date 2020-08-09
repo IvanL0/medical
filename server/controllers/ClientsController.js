@@ -34,6 +34,30 @@ class UserController{
   }
   
   create = async(req, res, next) => {
+    const registration = req.body
+    
+    try{
+      const client = await db.Clients.create({
+        name: registration.name,
+        age: registration.age,
+        gender: registration.gender,
+        phone: registration.phone,
+      })
+      
+      await db.Appointment.create({
+        time: registration.time,
+        timetable_id: registration.timetable_id,
+        clients_id: client.dataValues.id,
+      })
+      
+      res.status(201).send()
+      
+    }catch(e){
+      console.log('ERR', e)
+    }
+  }
+  
+  update = async(req, res, next) => {
     const client = req.body
     
     try{

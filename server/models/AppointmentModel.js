@@ -9,9 +9,9 @@ class AppointmentModel extends Sequelize.Model{
         primaryKey: true,
         autoIncrement: true,
       },
-      time_from: {
+      time: {
         type: DataTypes.DATE,
-        field: 'time_from',
+        field: 'time',
       },
       clients_id: {
         type: DataTypes.INTEGER,

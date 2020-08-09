@@ -13,8 +13,16 @@ class TimeTableModel extends Sequelize.Model{
         type: DataTypes.INTEGER,
         field: 'doctors_id',
       },
+      year: {
+        type: DataTypes.STRING(45),
+        field: 'year',
+      },
+      month: {
+        type: DataTypes.STRING(45),
+        field: 'month',
+      },
       date: {
-        type: DataTypes.DATE, 
+        type: DataTypes.STRING(45), 
         field: 'date',
       },
       time_from: {
